@@ -7,4 +7,5 @@ export default {
         './resources/views/**/*.blade.php',
         './vendor/filament/**/*.blade.php',
     ],
+    plugins: [require("daisyui")],
 }
