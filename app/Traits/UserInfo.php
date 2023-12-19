@@ -2,30 +2,44 @@
 
 namespace App\Traits;
 
+use App\Helpers\UserHelper;
+use App\Models\Account;
+use Filament\Panel;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 trait UserInfo {
-    protected $types = [
-        'regular' => 'REG',
-        'retailer' => 'RET',
-        'subdistributor' => 'SUB',
-        'distributor' => 'DIS',
-    ];
 
-    protected $roles = [
-        'user' => 'USR',
-        'admin' => 'ADM',
-        'editor' => 'EDT'
-    ];
-
-    protected $statuses = [
-        'active' => 1,
-        'suspended' => 0,
-        'banned' => -1,
-    ];
-
-    protected function generateUsername(){
-        $rand_int = rand(2, 5);
-        $rand_str = str(str()->random(4))->lower();
-        $name = $this->first_name;
-        return $name . $rand_int . $rand_str;
+    public function isAdmin(){
+        return $this->role === UserHelper::roles('admin');
     }
+
+    public function getFilamentName(): string
+    {
+        return $this->first_name . ' ' . $this->lastName;
+    }
+
+    public function panel(Panel $panel): Panel
+    {
+        return $panel->authGuard('web');
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        if($panel->getId() === 'app'){
+            // return $this->hasVerifiedEmail();
+            return true;
+        }
+
+        else if($panel->getId() === 'admin'){
+            return $this->isAdmin();
+        }
+
+        return false;
+    }
+
+    public function accounts(): HasMany
+    {
+        return $this->hasMany(Account::class);
+    }
+
 }

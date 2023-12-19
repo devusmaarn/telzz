@@ -6,13 +6,15 @@ namespace App\Models;
 
 use App\Casts\MoneyCast;
 use App\Traits\UserInfo;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasName, FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable, UserInfo, SoftDeletes;
 
@@ -23,12 +25,11 @@ class User extends Authenticatable
     protected $keyType = 'string';
 
     protected $attributes = [
-        'type' => $this->types['regular'],
-        'status' => $this->statuses['active'],
-        'role' => $this->roles['user'],
-        'username' => $this->generateUsername(),
+        'type' => 'REG',
+        'status' => 1,
+        'role' => 'USR',
         'wallet' => 0,
-        'commission ' => 0,
+        'commission' => 0,
     ];
 
     /**
@@ -37,9 +38,15 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
+        'username',
         'email',
+        'tel',
+        'referer',
         'password',
+        'wallet',
+        'commission'
     ];
 
     /**

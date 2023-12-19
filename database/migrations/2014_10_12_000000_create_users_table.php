@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->unsignedInteger('wallet');
             $table->unsignedInteger('commission');
-            $table->string('phone_number')->nullable();
+            $table->string('phone_number')->nullable()->unique();
             $table->string('referer')->nullable();
             $table->string('email')->unique();
             $table->string('type');
